@@ -16,7 +16,6 @@ class Results extends Component {
       <section>
         <Masonry
           options={masonryOptions}
-          updateOnEachImageLoad={true}
           enableResizableChildren={true}
         >
           {this.props.items.map((item, i) => {
