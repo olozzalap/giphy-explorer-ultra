@@ -4,11 +4,8 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import keys from '../keys.js';
 import axios from 'axios';
 
-import SearchInput from './SearchInput';
 import SearchAppBar from './SearchAppBar';
 import Results from './Results';
-
-let ticking = false;
 
 class App extends Component {
   constructor(props) {
@@ -23,6 +20,8 @@ class App extends Component {
       pageSize: 16
     }
     this.handleChange = this.handleChange.bind(this);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
     this.handleScroll = this.handleScroll.bind(this);
   }
   componentDidMount() {
@@ -40,16 +39,20 @@ class App extends Component {
       [e.target.name]: e.target.value
     })
   }
+  handleKeyPress(e) {
+    if (e.charCode === 13) {
+      this.handleSubmit();
+    }
+  }
   handleSubmit(e) {
     this.setState({
       results: [],
       trendingResults: false
+    }, () => {
+      this.sendRequest(false);
     });
-    this.sendRequest(false);
   }
   handleScroll(e) {
-    console.log((window.scrollY + window.innerHeight) - document.body.clientHeight);
-    console.log(document.body.clientHeight, document.documentElement.scrollHeight);
     if ((window.scrollY + window.innerHeight + 75) > document.body.clientHeight) {
       this.sendRequest(true);    
     }
@@ -67,13 +70,11 @@ class App extends Component {
     }
     axios.get(this.getEndpoint(), params)
     .then(res => {
-      console.log(res);
       this.setState({
         pagination: res.data.pagination,
         results: this.state.results.concat(res.data.data)
       })
     }, err => {
-      console.log(err);
     })
   }
   getEndpoint() {
@@ -81,11 +82,14 @@ class App extends Component {
   }
 
   render() {
-    console.log(this.state);
     return (
       <main>
-        <SearchAppBar onChange={this.handleChange} value={this.state.searchText} />
-
+        <SearchAppBar 
+          onChange={this.handleChange} 
+          onKeyPress={this.handleKeyPress}
+          onSubmit={this.handleSubmit} 
+          value={this.state.searchText} 
+        />
         <Results items={this.state.results}/>
 
         <CssBaseline />

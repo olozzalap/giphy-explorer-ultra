@@ -3,15 +3,14 @@ import Masonry from 'react-masonry-component';
 import GifCard from './GifCard';
 
 const masonryOptions = {
-    transitionDuration: ".9s",
-    stagger: 30
+    transitionDuration: ".5s",
+    stagger: 20
 };
 
 class Results extends Component {
-  constructor(props) {
-    super(props);
-    console.log(this.masonry);
-  }
+  // constructor(props) {
+  //   super(props);
+  // }
   render() {
     return (
       <section>
@@ -22,7 +21,7 @@ class Results extends Component {
         >
           {this.props.items.map((item, i) => {
             return (
-              <GifCard item={item}/>
+              <GifCard key={i + item.id} item={item}/>
             )
           })}
         </Masonry>
